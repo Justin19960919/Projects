@@ -1,0 +1,149 @@
+---
+title: "Automization of Exploratory Data Analysis"
+author: "Justin Lee"
+date: "2018/8/22"
+output: html_document
+---
+### Auto-EDA
+
+This is an automization of statistical tests in data sets.Statisitcal tests in different scenarios have bothered people for a long time. Whether the data is in normal distribution, do we use standard approach or non-parameter approach? Is the class numeric or factor? What kind of tests to perform when the variables are both numeric? Both factors? One numeric and the other is a factor? These questions are solved in this function by a decision tree like function, once you put your data into the function, it will automatically run all statistical tests that fit the data structure, and print our results between all variables.
+
+> For numeric vs. numeric : Runs Pearson correlation, linear regression
+  * returns correlation coefficient
+  * returns regression coefficient, R square, Adjusted R square, p-value
+
+> For factor vs. numeric
+  * The function first discriminates the variance and normality of data between factors
+    + For normal distribution: 2 groups: T test ; 3 groups: Anova test
+    + For non normal distribution: 2 groups: Wilcoxon rank sum test ; 3 groups: Kruskal Wallis Test
+
+> If the data covers formats other than numeric or factors, then the function automatically skips the variable.
+
+
+```{r Auto EDA, echo=TRUE}
+
+auto_EDA<-function(data){
+  attach(data)## 直接先attach
+  n_row<-dim(data)[1]
+  n_col<-dim(data)[2]
+  data_col_names<-colnames(data)
+  data_summary<-summary(data)  ## 這個還不知道要放哪
+  
+  for(i in 1:(n_col-1)){
+    counting<-1
+    while((i+counting)<=n_col){
+      if((class(data[,i])=='numeric')&(class(data[,i+counting])=='numeric')){
+        correlation<-cor(data[,i],data[,i+counting])
+        model<-lm(data[,i]~data[,i+counting])
+        reg_coef<-summary(model)$coefficients[2,1]
+        lm_pvalue<-summary(model)$coefficients[2,4]  
+        rsquares<-c(summary(model)$r.squared,summary(model)$adj.r.squared)  
+        cat(paste(data_col_names[i],'vs.',data_col_names[i+counting]),'\n','Correlation:',correlation,'\n','linear model coefficient',reg_coef,'\n','p-value:',lm_pvalue,'\n',
+            'Rsquare:',rsquares[1],'\n','Adj-Rsquares:',rsquares[2],'\n','\n')
+        }
+      
+     if(((class(data[,i])=='factor')&(class(data[,i+counting])=='numeric'))|((class(data[,i])=='numeric')&(class(data[,i+counting])=='factor'))){
+       
+       if(((class(data[,i])=='factor')&(class(data[,i+counting])=='numeric'))){  # now i is factor
+        bartlett_test_pvalue<-bartlett.test(data[,i+counting],data[,i])$p.value    ## change to use shapiro.test??
+         if(bartlett_test_pvalue>0.05){  ##符合常態分佈
+           if(length(levels(data[,i]))<3){
+             ## 這邊要分成兩項跟三項
+             ttest1<-data[which(data[,i]==levels(data[,i])[1]),][,i+counting]
+             ttest2<-data[which(data[,i]==levels(data[,i])[2]),][,i+counting]
+             var.test_result<-var.test(ttest1,ttest2)
+             var_p<-var.test_result$p.value
+             if(var_p<0.05){
+               ttest_result<-t.test(ttest1,ttest2,conf.level=0.95,alternative='two.sided',var.equal = F)
+             }else if(var_p>=0.05){ttest_result<-t.test(ttest1,ttest2,conf.level=0.95,alternative='two.sided',var.equal = T)}
+             cat(paste(data_col_names[i],'vs.',data_col_names[i+counting],':','ttest_result='),'\n')
+             print(ttest_result)
+           }
+           if(length(levels(data[,i]))>=3){
+           anova_result<-summary(aov(data[,i+counting]~data[,i]))
+           cat(paste(data_col_names[i],'vs.',data_col_names[i+counting]),'Anova results=:','\n')
+           print(anova_result)
+           cat('\n')
+           }}
+        
+           if(bartlett_test_pvalue<=0.05){  ##不符合常態分佈，無母數分析
+             if(length(levels(data[,i]))<3){
+               ## do wilcoxon rank sum tst
+               wilcox_1<-data[which(data[,i]==levels(data[,i])[1]),][,i+counting]
+               wilcox_2<-data[which(data[,i]==levels(data[,i])[2]),][,i+counting]
+               wilcox_result<-wilcox.test(wilcox_1,wilcox_2)
+               cat(paste(data_col_names[i],'vs.',data_col_names[i+counting],':','wilcoxon test result='),'\n')
+               print(wilcox_result)
+             }
+             if(length(levels(data[,i]))>=3){
+               krus_test_p<-kruskal.test(data[,i+counting],data[,i])$p.value
+               cat(data_col_names[i],'vs.',data_col_names[i+counting],'kruskal wallis test p value:',krus_test_p,'\n')
+               cat('\n')
+             }
+           }
+       } ## class(data[,i])=='factor 這個}
+        
+        if(((class(data[,i])=='numeric')&(class(data[,i+counting])=='factor'))){  ##現在是第i個是numeric
+          bartlett_test_pvalue<-bartlett.test(data[,i],data[,i+counting])$p.value
+          if(bartlett_test_pvalue>0.05){  ##符合常態分佈
+            if(length(levels(data[,i+counting]))<3){
+              ## 這邊要分成兩項跟三項
+              ttest1<-data[which(data[,i+counting]==levels(data[,i+counting])[1]),][,i]
+              ttest2<-data[which(data[,i+counting]==levels(data[,i+counting])[2]),][,i]
+              var.test_result<-var.test(ttest1,ttest2)
+              var_p<-var.test_result$p.value
+              if(var_p<0.05){
+                ttest_result<-t.test(ttest1,ttest2,conf.level=0.95,alternative='two.sided',var.equal = F)
+              }else if(var_p>=0.05){ttest_result<-t.test(ttest1,ttest2,conf.level=0.95,alternative='two.sided',var.equal = T)}
+              cat(paste(data_col_names[i+counting],'vs.',data_col_names[i],':','ttest_result='),'\n')
+              print(ttest_result)
+              cat('\n')
+            }
+            if(length(levels(data[,i+counting]))>=3){
+              anova_result<-summary(aov(data[,i]~data[,i+counting]))
+              cat(paste(data_col_names[i],'vs.',data_col_names[i+counting]),'  Anova results=','\n')
+              print(anova_result)
+              cat('\n')
+            }}
+          
+          if(bartlett_test_pvalue<=0.05){  ##不符合常態分佈，無母數分析
+            if(length(levels(data[,i+counting]))<3){
+              ## do wilcoxon rank sum tst
+              wilcox_1<-data[which(data[,i+counting]==levels(data[,i+counting])[1]),][,i]
+              wilcox_2<-data[which(data[,i+counting]==levels(data[,i+counting])[2]),][,i]
+              wilcox_result<-wilcox.test(wilcox_1,wilcox_2)
+              print(paste(data_col_names[i],'vs.',data_col_names[i+counting],':','wilcoxon test result='),'\n')
+              print(wilcox_result)
+              cat('\n')
+            }
+            if(length(levels(data[,i+counting]))>=3){
+              krus_test_p<-kruskal.test(data[,i],data[,i+counting])$p.value
+              cat(data_col_names[i],'vs.',data_col_names[i+counting],'kruskal wallis test p value:',krus_test_p,'\n')
+              cat('\n')
+            }
+          }
+           }###numeric這個的結尾
+       }## numeric*factor ; factor*numeric 的大括號
+      ## numeric*numeric   / factor*factor 打完了 
+      
+      if((class(data[,i])=='factor')&(class(data[,i+counting])=='factor')){
+        chis_ta<-table(data[,i],data[,i+counting])
+        chis_result<-chisq.test(chis_ta)
+        chis_p<-chis_result$p.value
+        if(chis_p<0.05){
+          cat(paste(data_col_names[i],'&',data_col_names[i+counting],'are significantly correlated ; chi square test p_value < 0.05'),'chisq-pvalue:',chis_p,'\n')
+        }else if(chis_p>=0.05){cat(paste(data_col_names[i],'&',data_col_names[i+counting],'are not significantly correlated; chi square test p_value >= 0.05 '),'chisq-pvalue:',chis_p,'\n')}
+      }
+      
+      if((class(data[,i])=='character')){next}
+ 
+      counting<-counting+1
+     }#while((counting+i)<=n_col)
+      
+     counting<-1
+    }## for 迴圈的括號
+ 
+  }## 大function的括號
+  
+```
+
