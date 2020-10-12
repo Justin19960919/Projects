@@ -5,11 +5,14 @@ from bs4 import BeautifulSoup as bs
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+
+import pandas as pd
+
 # chrome_options = Options()
 # chrome_options.add_argument("--headless")
 
 
-
+#https://towardsdatascience.com/how-i-diyd-my-budget-using-python-for-selenium-and-beautiful-soup-4d2edc5c519
 
 def initiate(account,password):
 	boa_url = "https://www.bankofamerica.com"
@@ -93,7 +96,6 @@ def savings(account,password,start_date,end_date,account_name):
 	## savings account
 	try:
 		wait(driver)
-		#savings = driver.find_element_by_link_text("Advantage Savings - 1019")
 		savings = driver.find_element_by_link_text(account_name)
 		savings.click()
 		sequential_processing(driver,start_date,end_date)
@@ -115,6 +117,7 @@ def credit_card(account,password):
 		print("Got into try of credit card")
 		wait(driver)
 		print("got past wait")
+		time.sleep(15)
 		credit = driver.find_element_by_xpath('//*[contains(concat( " ", @class, " " ), concat( " ", "AccountItemCreditCard", " " ))]//*[contains(concat( " ", @class, " " ), concat( " ", "AccountName", " " ))]//a')
 		credit.click()
 		# click_download_btn = driver.find_element_by_xpath('//*[contains(concat( " ", @class, " " ), concat( " ", "download-upper", " " ))]')
@@ -132,3 +135,11 @@ def credit_card(account,password):
 		print(type(ex_ind))   # the exception instance
 		print(ex_ind.args)
 		driver.close()
+
+
+
+
+
+
+
+

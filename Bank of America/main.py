@@ -23,7 +23,7 @@ def main():
 	account = input("Please enter your account name: ")
 	password = input("Please enter your password: ")
 	## initiate selenium
-	selection = int(input("Please select which account you want to access:\n1. banking\n2.savings\n3.credit card\n"))
+	selection = int(input("Please select which account you want to access:\n1. banking\n2.savings\n3.credit card\n4.All"))
 
 	## user input date
 	start_date = input("Please input start date in format (mm/dd/yyyy): ")
@@ -48,11 +48,14 @@ def main():
 		print("During {} to {}; ".format(start_date,end_date))
 		credit_card_cost = TransactionsCredit(date,username)
 		## add function to select only transactions in the required timeframe
+	elif selection ==4:
+		print("During {} to {}; ".format(start_date,end_date))
+		banking(account,password,start_date,end_date)
+		banking_cost = TransactionsBanking(date,username)
+		credit_card(account,password)
+		credit_card_cost = TransactionsCredit(date,username)
+		print(f'Total Costs: ${banking_cost+credit_card_cost} USD.')
 
 
 if __name__ == "__main__":
 	main()
-
-
-# default_startdate = "09/03/2020" 
-# default_enddate = "09/15/2020"

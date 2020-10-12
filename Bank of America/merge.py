@@ -7,7 +7,7 @@ import numpy as np
 
 
 ## input pandas dataframe you want to save, and specify which kine of bank account this is
-def SaveFileInTransaction(file,typee,date):
+def SaveFileInTransaction(file,typee,date,name_in_computer):
 
 	transactions_dir = "/Users/"+name_in_computer+"/Desktop/boa/Transactions"
 
@@ -15,6 +15,7 @@ def SaveFileInTransaction(file,typee,date):
 		os.mkdir(transactions_dir)
 	else:
 		os.chdir(transactions_dir)
+		date = date.replace("/","-")
 		file.to_csv(transactions_dir+"/"+date+"_"+typee+"_"+name_in_computer+".csv",sep=",")
 
 
@@ -52,7 +53,7 @@ def TransactionsCredit(date,name_in_computer):
 
 	## Searches the downloads file for Transaction.csv files then groups by payee, saved in the boa
 	## transactions file. then removed from the downloads file, returns total money spent on crefit card
-
+	start_date, end_date = date.split("_")
 	myfile = FindFile("Transaction",name_in_computer)
 	
 	if type(myfile) == "str":
@@ -61,15 +62,18 @@ def TransactionsCredit(date,name_in_computer):
 		
 		# strip all amount > 0 
 		myfile = myfile[myfile['Amount']<0]
-		#myfile_groupby_date_and_payee = myfile.groupby(['Posted Date','Payee'])['Amount'].sum()
+
+		# filter by date
+		myfile['Posted Date'] = pd.to_datetime(myfile['Posted Date'])
+		time_interval = (myfile['Posted Date']>=start_date) & (myfile['Posted Date']<=end_date)
+		myfile = myfile.loc[time_interval]
+
+		#group by
 		myfile_groupby_payee = myfile.groupby(['Payee'])['Amount'].sum().reset_index()
-
-		#print(myfile_groupby_payee)
-
 		myfile_groupby_payee.columns = ["Payee","Amount"]
 		total_cost = myfile_groupby_payee['Amount'].sum()
-		print(f'Your total expenses in credit card is {total_cost}.')
-		SaveFileInTransaction(myfile_groupby_payee,"Credit",date)
+		print(f'Your total expenses in credit card account is ${total_cost} USD.')
+		SaveFileInTransaction(myfile_groupby_payee,"Credit",date,name_in_computer)
 
 		return total_cost
 
@@ -112,7 +116,7 @@ def TransactionsBanking(date,name_in_computer):
 
 	print(f'Your total expenses in your Banking account is ${amount_spent} USD, while your running balance is ${running_balance}')
 
-	SaveFileInTransaction(statement_dict,"BankingAccount",date)
+	SaveFileInTransaction(statement_dict,"BankingAccount",date,name_in_computer)
 	os.remove(download_route+"stmt.csv")
 
 	return amount_spent
