@@ -71,6 +71,7 @@ def sequential_processing(driver,start_date,end_date):
 	wait(driver)
 	select_format(driver)
 	wait(driver)
+	time.sleep(5)
 	download_transaction(driver)
 
 
@@ -81,6 +82,7 @@ def banking(account,password,start_date,end_date):
 	
 	try:
 		wait(driver)
+		time.sleep(5)
 		banking = driver.find_element_by_xpath('//li[(((count(preceding-sibling::*) + 1) = 1) and parent::*)]//*[contains(concat( " ", @class, " " ), concat( " ", "AccountName", " " ))]//a')
 		banking.click()
 		sequential_processing(driver,start_date,end_date)
@@ -96,8 +98,10 @@ def savings(account,password,start_date,end_date,account_name):
 	## savings account
 	try:
 		wait(driver)
+		time.sleep(5)
 		savings = driver.find_element_by_link_text(account_name)
 		savings.click()
+		time.sleep(5)
 		sequential_processing(driver,start_date,end_date)
 
 	except Exception as ex_ind:
@@ -135,11 +139,3 @@ def credit_card(account,password):
 		print(type(ex_ind))   # the exception instance
 		print(ex_ind.args)
 		driver.close()
-
-
-
-
-
-
-
-

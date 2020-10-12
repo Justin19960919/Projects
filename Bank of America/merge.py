@@ -87,39 +87,42 @@ def TransactionsBanking(date,name_in_computer):
 	## transactions file. then removed from the downloads file, returns total money spent
 	download_route = "/Users/"+name_in_computer+"/Downloads/"
 
-	with open(download_route+"stmt.csv") as reader:
+	if os.path.exists(download_route+"stmt.csv"):
+		with open(download_route+"stmt.csv") as reader:
 
-		reader_list = reader.readlines()[6:] ## summary is from line 0 to 5
+			reader_list = reader.readlines()[6:] ## summary is from line 0 to 5
 
-		data = []
-		for line in reader_list:
-			
-			line = line.replace("\n","")
-			line = line.replace('"',"")
-			line = line.split(",")
-			if line [0] == "Date":
-				title = line
-			else:
-				data.append(line)
+			data = []
+			for line in reader_list:
+				
+				line = line.replace("\n","")
+				line = line.replace('"',"")
+				line = line.split(",")
+				if line [0] == "Date":
+					title = line
+				else:
+					data.append(line)
 
-	statement_dict = {}
+		statement_dict = {}
 
-	for t in range(len(title)):
+		for t in range(len(title)):
 
-			statement_dict[title[t]] = list(map(lambda x:x[t] if len(x[t])>0 else "0",data))
+				statement_dict[title[t]] = list(map(lambda x:x[t] if len(x[t])>0 else "0",data))
 
-	statement_dict = pd.DataFrame(statement_dict)
-	statement_dict['Amount'] = statement_dict['Amount'].astype('float')
+		statement_dict = pd.DataFrame(statement_dict)
+		statement_dict['Amount'] = statement_dict['Amount'].astype('float')
 
-	amount_spent = statement_dict['Amount'].sum()
-	running_balance = statement_dict['Running Bal.'][len(statement_dict['Running Bal.'])-1]
+		amount_spent = statement_dict['Amount'].sum()
+		running_balance = statement_dict['Running Bal.'][len(statement_dict['Running Bal.'])-1]
 
-	print(f'Your total expenses in your Banking account is ${amount_spent} USD, while your running balance is ${running_balance}')
+		print(f'Your total expenses in your Banking account is ${amount_spent} USD, while your running balance is ${running_balance}')
 
-	SaveFileInTransaction(statement_dict,"BankingAccount",date,name_in_computer)
-	os.remove(download_route+"stmt.csv")
+		SaveFileInTransaction(statement_dict,"BankingAccount",date,name_in_computer)
+		os.remove(download_route+"stmt.csv")
 
-	return amount_spent
+		return amount_spent
+	else:
+		print("The time period you have requested to download has no posted transactions. Please select a new date range.")
 
 
 

@@ -10,9 +10,9 @@ import numpy as np
 from selenium import webdriver
 # headless browser
 # from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup as bs
-from selenium.webdriver.supportui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+# from bs4 import BeautifulSoup as bs
+# from selenium.webdriver.supportui import WebDriverWait
+# from selenium.webdriver.support import expected_conditions as EC
 
 
 def main():
@@ -23,7 +23,7 @@ def main():
 	account = input("Please enter your account name: ")
 	password = input("Please enter your password: ")
 	## initiate selenium
-	selection = int(input("Please select which account you want to access:\n1. banking\n2.savings\n3.credit card\n4.All"))
+	selection = int(input("Please select which account you want to access:\n1. banking\n2.savings\n3.credit card\n4.All\n"))
 
 	## user input date
 	start_date = input("Please input start date in format (mm/dd/yyyy): ")
