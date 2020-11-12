@@ -1,3 +1,4 @@
+
 Command+Shift+G  (search pc by route)
 Command+Shift+G (open package control in st3)
 which python (open cmd, check python route in pc)
@@ -11,19 +12,22 @@ which pyhthon
 # 安裝 requests, lxml, pandas
 pip install -U requests lxml pandas
 
-## Launching Jupyter notebook
+# upgrading packages
+pip install --upgrade numpy==1.19.1
+1. To install the latest version of a package: >>pip install 'PackageName'
+2. To install a specific version, type the package name followed by the required version: >>pip install 'PackageName==1.4'
+3. To upgrade an already installed package to the latest from PyPI: >>pip install --upgrade PackageName.
 
+## Launching Jupyter notebook
 - open terminal
 jupyter notebook
 
 - shut program
 Ctrl+C : shut down kernel (y/n)
 
+####################################### Decorators #############################
 
-
-################################# PEP8 python style guide #################################
-
-
+Meta-programming: A part of the program modifies another part at compile time
 
 
 
@@ -31,6 +35,9 @@ Ctrl+C : shut down kernel (y/n)
 
 
 
+####################################### Conditions #############################
+Inline if else statement:
+x = a if b else 0
 
 
 
@@ -68,7 +75,7 @@ math.ceil()
 math.floor()
 math.pow()
 
-####################################### String #######################################
+####################################### String ###################################
 # String "" ''
 
 str1='abcd'
@@ -150,6 +157,21 @@ age = 23
 print(f"Hello, My name is {name} and I'm {age} years old.") 
 print(f'score : {cross_val_score(estimator, data, train_Y, cv=5).mean()}')
 
+###################################   loops    ###############################
+
+
+range(start, end,step_size)
+range(1,10,1) --> 1~9
+range(0,20,5) --> 0 5 10 15
+# reverse range
+range(20,0,-5) --> 20,15,10,5   ## stops at the previous item from second arg of range()
+range(20,10,-1) --> 20,19,.....11
+
+
+for index, item in enumerate(list or string):
+	...
+
+
 
 
 #################################################################################
@@ -164,7 +186,21 @@ datetime
 ** sorted()會保留原本的，產生另外一個sorted的物件
 
 
-# list
+--------  list / arrays (ordered and mutable) -------- 
+## methods:
+
+.insert(some_index) # insert at specific index
+.pop(some_index)  # remove item based on index ; .pop() removes last index
+,remove(item) # remove item from list
+.reverse()
+.count(some_item) # returns count of a specified value
+.copy()
+.clear()
+
+
+
+
+## sorting
 list.sort()
 List.sort(reverse=True)
 - sorting dictionary
@@ -194,7 +230,8 @@ cars.sort(reverse=True, key=myFunc)
 
 
 
-# tuples: immutable 
+
+--------  tuples: ordered & immutable   --------
 tuple()
 (,)
 Tuple 可以相加 tuple1+tuple2
@@ -230,21 +267,43 @@ out2=map(lambda x:x**2, list1)
 
 
 
-## dictionary : dict()  
-	 》》is mutable; can use key to change value
-{key:value}
+-------  dictionary : dict()   -------- 
+》》is mutable; can use key to change value
+{key:value}	ex: a = dict(one=1, two=2, three=3)
 dictionary['key']
 
-x in y --> check x 是不是有在y這個dictionary的key裡面
 
-dict[key]=value
+Create dictionary:
+dict()
+{}
 
 
-dictionary.keys()  提取所有的keys
-dictionary.values()
-dictionary.items() ## keys, values 同時印
+
+dictionary.keys()  or list(some_dictionary)	## get all the keys	
+dictionary.values()  ## return values of a dictionary
+dictionary.items() 	## print keys, values 
 
 for a,b in dictionary.items():
+
+for k in dict:
+	print(k) # iterates over the keys
+
+* dict methods *
+
+# Add items
+dict[key]=value
+
+# check if x is in the dictionary keys
+x in dict 	
+
+# deletion
+1. del dict['somekey']
+2. dict.pop('somekey')
+
+# copy
+somedict.copy()
+
+
 
 
 
@@ -253,14 +312,14 @@ for a,b in dictionary.items():
 
 
 
-
-## set {} 沒有順序，順序不重要，因此不能用順序提取 ; set()
+-------  set {} 沒有順序，順序不重要，因此不能用順序提取  -------- 
+set()
 1.轉成set 後只能元素只會出現一次
 2. 也不能用+，就是不允許串接的意思，只能做集合運算！
 
-
+# use bitwise logical operators
 > union: | 
-aset|{55}
+a set|{55}
 > intersect: &   EX:A&B
 > difference: 差集 a-b(把在a集合裡面b集合的東西扣掉)
 > Symmetric difference : 全部 減掉 共同有的  EX:A^B
@@ -305,9 +364,8 @@ ___=datetime.datetime.strptime(name,表示方式)
 '%Y-%m-%d %H:%M:%S' # H表示24小時制
 
 
------------------------------------------------------------------
 
-
+################################# File processing #################################
 
 # 3-7 檔案讀寫 (read files)
 <filevar>=open(<name>,<mode>,encoding=<encoding>)
@@ -320,33 +378,97 @@ ___=datetime.datetime.strptime(name,表示方式)
 rt   ## default text
 rb<->wb   #binary file : non text file (Binary mode: ex:images)
 r<->w  # text file
-
+ 
 EX: 
 infile=open("numbers.dat","rb")
 
 path 使用 \\ 代替 \
 
+
+############## reading files ############## 
+
 ## read in file
-f = open("demofile.txt", "r")
-print(f.readline())  ## readline reads only one line
-f.read()  ## reads all, and return txt
-print(f.read(5))  ## reads 5 lines
+f = open("demofile.txt", "r")  ## f is an array we can loop across
+
+# read in
+f.read()	# reads in whole file
+f.read(5)	# reads 5 lines
+f.readlines()	# reads in as a list of strings
+
+
+## read line by line
+file = open(...)
+lines = []
+for line in file:
+	lines.append(line)
+file.close()
+
+## best practice
+lines = []
+with open(filepath, "r") as file:
+	for line in file:
+		lines.append(line)
+
+
+# close file
 f.close()
 
+
+
+
+############## writing files ############## 
+
 ## write to existing file
+
+
+
 f = open("demofile.txt", "a") # means append
 f.write("Now the file has more content!")
 f.close()
 
-#Check if File exist
+
+# creates a file if it doesn't exist, overwrites if it does
+f = open("__.txt","w")t
+f.write("some text")
+f.close()
+
+f.writelines(__some list of strings__)
+
+file = open(file_path, "w")
+for line in lines:
+	file.write(line + "\n")
+file.close()
+
+# best practice
+
+def best_practice(file_path):
+    '''
+        Function -- best_practice
+            Demonstrates how to use "with" to automatically close the file.
+        Parameter:
+            file_path -- the path of the file
+        Returns:
+            Nothing.
+    '''
+    lines = generate_lines()
+    # Opens the file and assigns it to the variable called file
+    with open(file_path, "w") as file:
+        # The following is the line by line option but the others work too
+        for line in lines:
+            file.write(line + "\n")
+    # The file is automatically closed when using "with
+
+
+
+
+##Check if File exist
 import os
 if os.path.exists("demofile.txt"):
   os.remove("demofile.txt")
 else:
   print("The file does not exist")
 
-## read in and become text
-
+## Using with to read files
 
 with open("/Users/justin/Desktop/ForFun/obama_p1.txt", "r") as ob:
 	obb=ob.read().lower()
@@ -356,46 +478,48 @@ print(type(obb))  >> str
 
 
 
+################################# Exception handling #################################
 
------------------------------------------------------------------
-＃3-8 重看
+isinstance(object,type) #ex: isinstance("pie",str)
+
+--- Raising Errors ---
+if _____:
+	raise ValueError("____")
+	raise TypeError("____")
 
 
-# 3-9 
-Try-Except
+
+-----  Exception Handling -------
+** Try-Except-Raise **
 
 try:
 #先執行這裡
 
 except 某一種error  :
-# 如果有error就會跳到這裡
+# 如果有error就會跳到這裡; you can print out something ; but doesn't print error
 
+Ex:
+except TypeError as ex:
+	print(ex)
+
+except ValueError as ex:
+	print(ex)
 
 ##屬於error的部分，也不用寫break
 raise Exception("   ")
 
+# we can raise exceptions by ourselves
+raise ___a built in exception type ___
+raise ValueError("________")
 
---------------------------
-week 4
-
-權證
-ETF
-
-CAPM Model : 
-所有投資都是理性、風險趨避 以極大化期望報酬
-無風險利率的借貸
-無交易成本
-沒有資訊不平等
+- except ValueError:
+	raise ValueError("___")
 
 
-Market return
-
-Stock return
-跳脫字元：
-\
-
-
-
+** Unit testing with exceptions
+from pytest import raises
+with raises(__some error__):
+	some_function(" your test case")
 
 ################################# File writing #################################
 
@@ -453,14 +577,6 @@ csv.DictReader(): 可以用column 的名字來取得資料
 Python Graph Gallery:
 https://python-graph-gallery.com
 
-R Graph Gallery:
-https://www.r-graph-gallery.com
-
-
-Plotting results:
-
-import matplotlib
-
 
 import matplotlib.pyplot as plt
 From matplotlib.font_manager import FontProperties
@@ -486,7 +602,9 @@ pops = [2.5,2.7,3,3.3,3.6,4.0,
         4.4,4.8,5.3,6.1,6.5,6.9,7.3]
 deaths = [1.2,1.7,1.8,2.2,2.5,2.7,2.9,3,3.1,3.2,3.5,3.6,4]
 lines = plt.plot(years,pops,years,deaths)  ## 這個可以一次畫兩條線
+
 #plt.plot(years,pops,'k-')
+
 ## add another line 就再plot一次就好
 #plt.plot(x,y,'k-',color=?)
 l,y=lines
@@ -560,6 +678,8 @@ plt.show()
 
 ## bar chart
 https://ithelp.ithome.com.tw/articles/10196410
+
+
 
 
 
@@ -743,6 +863,15 @@ stdev() #Sample standard deviation of data.
 variance() #Sample variance of data.
 
 
+
+# Two sample t-tests
+scipy.stats.ttest_ind(a, b, axis=0, equal_var=True, nan_policy='propagate')
+
+
+
+
+
+
 ################################# os #################################
 匯入os
 import os
@@ -892,6 +1021,7 @@ print(data[0:1])
 
 ## similar to range()
 print(np.arange(10))
+np.arange(0.1,0.5,0.1)  # we can use arange() for floats
 
 ## can multiply or divide
 t1=np.array([1,2,3,4])
@@ -937,7 +1067,13 @@ np.log1p()  ## returns the ln of one plus input array
 x_train=np.concatenate((x_train_1,x_train_2),axis=0)
 
 # finding the indexes of all True objects in a list
-np.where(_list_) # this returns a nd.array
+Method 1 . np.where(_list_) # this returns a nd.array
+
+Method 2. Use itertools
+from itertools import compress
+compress(list1,list2)  # list1: items ; list2: boolean values ---> selects the truth items from list1
+
+
 
 ## using the any function
 any() --= can input dictionary, list, strings
@@ -957,8 +1093,7 @@ import pandas as pd
 ## pandas series 有含欄名，取出值使用__.values --> 這樣會變成numpy array (numpy.ndarray)
 
 
-
-## pandas series : a 1 dimensional array that is labeled
+## pandas series : a 1 dimensional array that is labeled; has an index
 print(cars['country'])  ## not using brackets
 
 my_obj = pd.Series([4, 7, -5, 3],index=[])
@@ -1014,14 +1149,14 @@ __.columns ## returns what columns there are
 	- specify index: ___.index = __somelist__
 __.info()  ## check out data types of each column
 __.dtypes  ## show each column data type
-__.describe() 
+__.describe() # only returns descriptions of continuous variables
 __,dropna()
 
 
 ## count,mean,std,min,q1,q2,q3,max
 __.count()  ## 查看個數  **
 __.unique()
-__.sum()
+__.sum()	// can specify axis .sum(axis=0/1); axis=0, sum by rows. axis=1, sum by columns
 __.mean()
 __.median()
 __.describe()
@@ -1036,8 +1171,15 @@ __.skew()
 	## abs(skew)>1 highly skewed
 
 __.kurt() ## kurtosis>3 --> heavier tails
-__.corr() ## correlation matrix of all values
+__.corr() ## correlation matrix of all values * DataFrame.corr(method='pearson/kendall/spearman', min_periods=1) *
 __.cov()
+
+__.astype() 	# astype('int64')
+
+** 相異值個別有多少個
+pd.value_counts(__some column__)
+
+
 
 # transpose
 _df_.T
@@ -1129,13 +1271,6 @@ min   1.0   2.0   3.0
 max   NaN  8.0
 min   1.0  2.0
 sum  12.0  NaN
-
-
-
-
-
-** 相異值個別有多少個
-pd.value_counts(__some column__)
 
 ** 判斷遺漏值
 print(ironmen_df.ix[:, "groups"].isnull())
@@ -1239,41 +1374,73 @@ for c in data_mean.columns:
         under 0.05 confidence. \n')
 
 
-## plotting with pandas
-
+################################# Plotting with pandas data frame #################################
 https://medium.com/datainpoint/從-pandas-開始-python-與資料科學之旅-8dee36796d4a
+https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.html
 
+--- Requirements ---
 import matplotlib.pyplot as plt
-import seaborn as sns  ## for 美觀
+import seaborn as sns  		// builds on top of Matplotlib
 
+* Saving plots
+plt.savefig('output.png')	# the plot gets saved to 'output.png'
 
-################################# Plotting #################################
-
-
-
-## line plot
-_df_.plot(x="",y="")
-_df_.plot(x="",y="",kind="scatter")
-_df_.plot(y="",kind="box")
-_df_.plot(y="",kind="hist")
-
--bins
--range
--cumulative
-
-plt.xlabel("____")
-plt.ylabel("____")
+* Show the plot
 plt.show()
 
-## subplots
-fig, axes = plt.subplots(nrows=3, ncols=1)
-titanic.loc[titanic['pclass'] == 1].plot(ax=axes[0], y='fare', kind='box')
+* Configure the plot
+plt.figure(figsize = (15,12))
+plt.xlabel("____")
+plt.ylabel("____")
+plt.title(" ")
+plt.subplots(nrows=3, ncols=1)
 
-sns.distplot()
+kind — ‘bar’,’barh’,’pie’,’scatter’,’kde’ etc which can be found in the docs.
+color — Which accepts and array of hex codes corresponding sequential to each data series / column.
+linestyle — ‘solid’, ‘dotted’, ‘dashed’ (applies to line graphs only)
+xlim, ylim — specify a tuple (lower limit, upper limit) for which the plot will be drawn
+legend— a boolean value to display or hide the legend
+labels — a list corresponding to the number of columns in the dataframe, a descriptive name can be provided here for the legend
+title — The string title of the plot
 
 
 
+* Scatter plot
 
+df.plot(kind='scatter',x='',y='',color='')
+plt.show()
+
+* Bar plot
+df.plot(kind='bar',x='',y='')
+
+- barplot with groupby
+df.groupby('state')['name'].nunique().plot(kind='bar')
+plt.show()
+
+
+* Line plot
+(Multiple columns)
+ax = plt.gca()
+df.plot(kind='line',x='',y='',ax=ax)			// first line
+df.plot(kind='line',x='',y='', color='', ax=ax)		// second line
+plt.show()
+
+
+
+* Histogram
+df.hist(column='', bins=50)
+
+* piechart
+df.plot.pie(y='some_column',figsize=(5, 5),autopct='%1.1f%%', startangle=90)
+plt.show()
+
+
+* box plot
+
+
+
+* Pairplots for column to column
+sns.pairplot(car_data.loc[:,car_data.dtypes == 'float64'])
 
 
 
@@ -1344,15 +1511,22 @@ Import from another file from the same directory
 
 
 ################################# Feature Engineering ###########################################
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler, StandardScaler
+
+
+## Standard encoding 將連續變項標準化
+#标准化，返回值为标准化后的数据
+StandardScaler().fit_transform(data)
+
 
 ### Label encoding (used in ml model)
+- converts each value to a number ; might lead algorithm to think the data is ordinal when it isn't
 
 LEncoder = LabelEncoder()
-LEncoder.fit_transform(df)
+LEncoder.fit_transform(df[some_column])
 
 
-### Min max scaler disregards Nans ;and retains after transformation
+### Min max scaler disregards Nans ;and retains after transformation (將區間縮放到0~1)
 MMEncoder = MinMaxscaler()
 df_mm = MMEncoder.fit_transform(df) #fit then transform
 
@@ -1363,8 +1537,17 @@ boxcox(x)
 
 
 
-### One Hot encoding (used in dl models)
-pd.get_dummies(column or entire data frame)
+### One Hot encoding (used in dl models) // only takes in numerical values
+
+1. pd.get_dummies(column or entire data frame)	// more flexible
+
+2. 
+from sklearn.preprocessing import OneHotEncoder
+#哑编码，对IRIS数据集的目标值，返回值为哑编码后的数据
+- OneHotEncoder().fit_transform(iris.target.reshape((-1,1)))
+- pd.DataFrame(OneHotEncoder().fit_transform(df[some_column]).toarray())
+
+
 
 
 ### Mean encoding
@@ -1376,6 +1559,47 @@ for col in df.columns:
         data_mean = data_mean.drop([col],axis =1)  ## drop original column
 
 data_mean = data_mean.drop(['Survived'], axis =1)
+
+
+# Binarizer 將連續變項二元化
+from sklearn.preprocessing import Binarizer
+
+#二值化，阈值设置为3，返回值为二值化后的数据
+Binarizer(threshold=3).fit_transform(iris.data)
+
+
+
+
+
+
+############# Feature selection #############
+
+1, Using L1(Lasso regression):
+Reduce unimportant variables to 0 when lambda becomes large
+Lasso regression loss function : ∑(i from 1 to n)(Yi - ∑(j=1 to p) xijβj)^2 + ƛ∑(j=1 to p)|βj|
+
+from sklearn.linear_model import Lasso
+lasso = Lasso(alpha=.3)
+lasso.fit(X, Y)
+
+
+2. L2 ridge regression
+∑(i from 1 to n)(Yi - ∑(j=1 to p) xijβj)^2 + ƛ∑(j=1 to p)βj^2
+from sklearn.linear_model import Ridge
+ridge = Ridge(alpha=10)
+    ridge.fit(X,Y)
+    print("Ridge model:", pretty_print_linear(ridge.coef_))
+
+3. Xgboost
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1390,11 +1614,47 @@ estimator.fit(train_X, train_Y)
 pred = estimator.predict(test_X)
 
 
-## Logistic regression
+## Logistic regression	// can be used in binary or multhclass classification
+
 from sklearn.linear_model import LogisticRegression
 estimator = LogisticRegression()
 estimator.fit(train_X, train_Y)
 pred = estimator.predict(test_X)
+
+When to use:
+1. When target variable is binary
+2. Get probability results
+3. When data is linearly separable / when you need to understand the impact of a feature
+4. If we want to understand the impact of a feature
+
+Method:
+
+Sigmoid function: (logarithm function)
+
+ΘTX : Θtranspose X
+σ(ΘTX) =  1/(1+e^(-ΘTX))
+
+If ΘTX is big, then it becomes 1
+If ΘTX is small, then it becomes 0
+
+Output:
+p(Y=1 | X) 
+p(Y=0 | X) = 1 -  p(Y=1 | X) 
+
+Cost Function: compare yhat with y 
+For instance, if yhat(The probability of the estimated y) is 0.8, and y actual is 1, then the error is 0.2
+
+Training process:
+
+How to set the parameters or change parameters?
+Gradient descent using derivatives
+
+### look up
+
+
+## Random Forest regressor
+from sklearn.ensemble import RandomForestRegressor
+
 
 
 #### Train test split and Cross Validation. (Day 34 Ml100)
@@ -1426,15 +1686,159 @@ https://towardsdatascience.com/journey-to-the-center-of-multi-label-classificati
 #### Ensemble Learning Notes #### 
 利用給予不同演算法權重，使其投票，做出預測，通常可以比單一演算法，或得更好的結果（預測率）
 
+
+
+## Boosting (state of art machine learning algo to deal with structured data)
+What is boosting?
+Combination of weak learners into a strong learner, for all t, based on previous outcome t-1. We
+give lower weight to the correct predictions, and higher weight to miss-classified ones
+
 ** gradient boosting
 from sklearn.ensemble import GradientBoostingRegressor
 estimator = GradientBoostingRegressor()
 
+** XGboosting (Extreme gradient boosting)
+Base learners: Trees (cART:  classification and regression trees)
+
+https://www.datacamp.com/community/tutorials/xgboost-in-python#what
 
 
-########  Beautiful Soup ###############
 
-https://medium.com/@yanweiliu/python%E7%88%AC%E8%9F%B2%E5%AD%B8%E7%BF%92%E7%AD%86%E8%A8%98-%E4%B8%80-beautifulsoup-1ee011df8768
+## reaching the optimal set of hyperparameters in machine learning
+
+Grid Search, Random Search and Bayesian Optimization
+
+
+
+
+
+################################# Classification #################################
+Is Supervised Learning.
+Use labeled data to predict the category of a new row of data 
+
+
+---------  K Nearest Neighbors ---------
+binary classification or multi-class classification / can also be used in regression
+
+
+Methods:
+1. Choose k nearest neighbors and see the majority of categories (ie. Which category has the most proportion)
+to decide what category to assign
+
+2. Classifying cases based on their similarity (e.g. Euclidean distance ) to other cases
+
+* How to choose the right k?
+	Do cross validation/ fit on test data :  to search for highest accuracy model to determine k
+
+KNN for continuous target variables:
+Takes median/ mean for the neighbors to predict the target variable
+
+Sample Code:
+
+from sklearn.neighbors import KNeighborsClassifier
+
+k = 4
+#Train Model and Predict  
+neigh = KNeighborsClassifier(n_neighbors = k).fit(X_train,y_train)
+neigh
+
+yhat = neigh.predict(X_test)
+yhat[0:5]
+
+
+---------------  Decision Trees -----------------
+Building decision trees:	(Recursive partitioning)
+
+Methods:
+How to determine which attribute is the best?
+Calculate prevalence for every attribute in the categories with groupby
+High Predictiveness: decrease impurity, lower entropy
+
+-- Calculating entropy: amount of randomness	(we want less entropy)
+The lower the entropy, the higher the purity, and the less uniform distribution
+
+e.g.
+For one node, we want to calculate for category A and category B
+If, category A and B are 0.5 and 0.5 in terms of proportion, then entropy is 1, this variable is no use
+If category A is 1, which is 100% in the node, or vice versa, then entropy is 0
+
+Entropy formula: p(A)log(p(A)) - p(B)log(p(B))
+p(A) : the probability of A amongst all data
+
+
+-- Information gain:  (we want more information gain)
+Information gain = Entropy before split - weighted entropy after split
+eg.
+Originally: 9B5A
+Entropy before split: 0.94
+
+After first node split:
+F: 3B4A entropy 0.985
+M: 6B1A entropy 0.592
+
+weighted entropy after split:(7/14)*0.985 + (7/14)*0.592
+
+
+Information gain = 0.94 - (7/14)*0.985 + (7/14)*0.592)
+
+---------------  Support Vector machine (svm) -----------------
+
+Mapping data to a higher dimensional space: 
+- Linear
+- Polynomial
+- Rbf (radio basis function)
+- Sigmoid
+
+How to find the hyperplane?
+
+Largest separation / highest margin between two classes
+
+Examples closest two the hyperplane are the support vectors, and only them matter
+We try to choose the hyperplane with max distance to support vectors
+
+Disadvantages:
+Prone to overfitting if feature numbers > n
+Not computationally efficient, n > 1000
+
+Applications:
+Image recognition
+Text mining (detect spam, sentimental analysis)
+
+
+---------  Evaluation Metrics in Classification ---------
+
+*** Jaccard Index : the union between predicted and actual labels
+
+*** F-1 score: 
+
+Precision: TP/(TP+FP)	// TP: true positive
+Recall: TP/(TP+FN)
+F1 score = (2*(precision*recall)) / (precision+recall)
+Best: 1	// when precision is 1 and recall is 1
+Worst: 0
+
+Classifier has good recall and good precision  ----> good classifier
+
+
+*** Log loss
+Measures the performance of the predicted output
+logloss = -(1/n)∑(y*log(yhat) +(1-y)*log(1-yhat))
+
+Ideal classifiers have low log loss.
+
+Sample code:
+from sklearn import metrics
+print("Train set Accuracy: ", metrics.accuracy_score(y_train, neigh.predict(X_train)))
+print("Test set Accuracy: ", metrics.accuracy_score(y_test, yhat))
+
+More on sklearn metrics:
+
+
+
+
+
+
+
 
 
 
@@ -1509,25 +1913,85 @@ approx(function() == ___) ##replacing assert in pytest
 
 
 
+################################# Crontabs (Automating work) #################################
+
+#crontab guru  # check out the correct time to execute script
+
+
+
+# view cronjobs 
+#crontab -l
+
+# add a new cronjob 
+#crontab -e
+
+
+
+# Minute Hour Day Month Day_of_the_Week
+
+# ┌───────────── minute (0 - 59)
+# │ ┌───────────── hour (0 - 23) 
+# │ │ ┌───────────── day of month (1 - 31)
+# │ │ │ ┌───────────── month (1 - 12)
+# │ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday;
+# │ │ │ │ │                                       7 is also Sunday on some systems)
+# │ │ │ │ │
+# │ │ │ │ │
+# * * * * *  command to execute
+
+
+# which python
+#/Library/Frameworks/Python.framework/Versions/3.8/bin/python3
+
+
+
+## write python script 
+(Add to beginning of file)
+#!/usr/bin/env python    
+
+# give access to the script
+chmod +x __the script__
+
+
+## can do multiple commands in crontab
+'';
+MAILTO=your.email@email.com
+* * * * * cd /Users/user.name/dataanalysis/test && /usr/local/bin/python /Users/user.name/dataanalysis/test/py_script.py
+'''
+#50 19 * * * python hello.py >> a.txt
+
+# using python in writing crontab
+#https://stackabuse.com/scheduling-jobs-with-python-crontab/
+
+
+
+## don't want to use cronjob
+Simply comment it by #
+
+
+
+
+-----------------
+# killing a cronjob
+#pkill process-name
+#kill pid
+# find pid of a program
+ps ax | grep test.py
 
 
 
 
 
 
+------- Future projects -----
 
+Sentimental analysis on stock
 
+The most common sentiment indicators are:
 
-
-
-
-
-
-
-
-
-
-
+Put/Call Ratio
+Volatility Index
+Client Sentiment
 
 
 
