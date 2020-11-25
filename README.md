@@ -1,6 +1,9 @@
 # Projects
 Projects that I want to do
 
+#### Oddsharks
+* Data science project in progress, will move to separate repo later. Currently this script can crawl the Oddsharks gamepage,
+given game URL.
 
 
 #### Text Mining for customer complaints
