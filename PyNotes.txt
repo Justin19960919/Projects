@@ -221,17 +221,12 @@ def myFunc(e):
   return len(e)
 
 cars = ['Ford', 'Mitsubishi', 'BMW', 'VW']
-
-cars.sort(reverse=True, key=myFunc)
-
-
+cars.sort()	// In ascending order
+cars.sort(reverse=True, key=myFunc)	// In descending order
 
 
 
-
-
-
---------  tuples: ordered & immutable   --------
+--------  tuples: (ordered & immutable)   --------
 tuple()
 (,)
 Tuple 可以相加 tuple1+tuple2
@@ -267,7 +262,7 @@ out2=map(lambda x:x**2, list1)
 
 
 
--------  dictionary : dict()   -------- 
+-------  dictionary : dict() Unordered, mutable  -------- 
 》》is mutable; can use key to change value
 {key:value}	ex: a = dict(one=1, two=2, three=3)
 dictionary['key']
@@ -276,6 +271,16 @@ dictionary['key']
 Create dictionary:
 dict()
 {}
+
+
+pizza_prices = {
+  “Pepperoni” :  8.99,
+  “Hawaiian”: 12.99,
+   “Veggie supreme”: 11.99
+}
+
+
+
 
 
 
@@ -307,20 +312,29 @@ somedict.copy()
 
 
 
-## default dict
-
-
-
-
--------  set {} 沒有順序，順序不重要，因此不能用順序提取  -------- 
+-------  set {} Unordered, mutable  -------- 
 set()
 1.轉成set 後只能元素只會出現一次
 2. 也不能用+，就是不允許串接的意思，只能做集合運算！
 
+
+# To access use iterators:
+for item in set:
+
+# Add items
+
+- add 1 item
+_some set_.add(__a item__)
+
+- add multiple items
+_some set_.update([a list of items])
+
+
+
 # use bitwise logical operators
 > union: | 
 a set|{55}
-> intersect: &   EX:A&B
+> intersect: &   EX:A&B	set.intersection(other_set)
 > difference: 差集 a-b(把在a集合裡面b集合的東西扣掉)
 > Symmetric difference : 全部 減掉 共同有的  EX:A^B
 
@@ -365,7 +379,7 @@ ___=datetime.datetime.strptime(name,表示方式)
 
 
 
-################################# File processing #################################
+################################# File Handling #################################
 
 # 3-7 檔案讀寫 (read files)
 <filevar>=open(<name>,<mode>,encoding=<encoding>)
@@ -496,7 +510,12 @@ try:
 #先執行這裡
 
 except 某一種error  :
-# 如果有error就會跳到這裡; you can print out something ; but doesn't print error
+# 如果有error就會跳到這裡; you can print out something ; but doesn't print error (If there is a loop, then except handles it)
+
+
+finally:
+不管try except結果如何一定會執行finally這裏
+
 
 Ex:
 except TypeError as ex:
@@ -505,12 +524,29 @@ except TypeError as ex:
 except ValueError as ex:
 	print(ex)
 
-##屬於error的部分，也不用寫break
+• ValueError: some value is an incompatible type 
+• SyntaxError: typos
+• IndexError: nothing exists at the provided index 
+• RecursionError: forgot the base case
+
+
+### Raising Errors ###
+屬於error的部分，也不用寫break<
+When an exception is raised, any code that follows will not execute
 raise Exception("   ")
 
 # we can raise exceptions by ourselves
 raise ___a built in exception type ___
 raise ValueError("________")
+
+Ex:
+
+def time_validator(time):
+  parts = time.split(“:”)
+  if len(parts) != 2:
+    raise ValueError(“Time must be in the format HH:MM”)
+
+
 
 - except ValueError:
 	raise ValueError("___")
@@ -520,57 +556,6 @@ raise ValueError("________")
 from pytest import raises
 with raises(__some error__):
 	some_function(" your test case")
-
-################################# File writing #################################
-
-- 寫入檔案
---------------------------
-import csv
-__fh1＿＝open(檔名,'r',encoding="___",newline="")
-cheader=fh1.readline()
-
-reader1=csv.reader(_fh1_,delimeter='__')  delimeter:指定分隔符號是什麼
-\t : delimiter tab
-
-
-fh1.close()
---------------------------
-
-- 寫出檔案
---------------------------
-檔名=" 指定的路徑"
-_fh3__=open(檔名,'w',encoding="___",newline="")
-__writer3__=csv.writer(_fh3__)
-
-for arow in reader1:
-  arow=map(lambda x: x.strip(),arow)
-  writer3.writerow(arow)  ## 寫出檔案
-
-fh3.close()
---------------------------
-Terminal:
-pip3 install csvsorter
-
-# sorting csv files
-
-import os 
-os.getcwd()
-
-- 改變檔案路徑
-os.chdir()
-
-import csvsorter
-
-要處理的檔案="路徑"
-要寫出的檔按="路徑"
-
-csvsorter.csvsort(要處理的檔案,[0,2],output_filename=要寫出的檔案,has_header=True)
-
-[0,2] 先用第0個column排序 再用 第2個column排序
-
-
-4-7.
-csv.DictReader(): 可以用column 的名字來取得資料
 
 
 ################################# Matplotlib #################################
@@ -617,9 +602,6 @@ plt.title("Population Growth") # title
 plt.ylabel("Population in billions") # y label
 plt.xlabel("Population growth by year") # x label
 plt.show()
-
-
-
 
 
 ## Matplot data visulization
@@ -681,6 +663,149 @@ https://ithelp.ithome.com.tw/articles/10196410
 
 
 
+-------------------- Introductionn to data visualization with Matplotlib (DataCamp) ----------------
+fig, ax = plt.subplots()
+
+fig, ax = plt.subplots(3,2)		// 3 rows, 2 columns
+
+# setting the width and height of the plot
+fig.set_size_inches([__,__])	 // width, height
+
+
+# index into the object
+ax[0,0].plot(x,y)	# plot for row0, col 0
+
+# Small multiples (Plotting multiple subplots on a canvas)
+Ex:
+fig, ax = plt.subplots(2,1,sharey = True)	# share the y axis grid
+ax[0].plot(..)
+ax[1].plot(..)
+
+
+
+
+
+# Plot MLY-PRCP-NORMAL from seattle_weather against the MONTH
+ax.plot(seattle_weather["MONTH"], seattle_weather["MLY-PRCP-NORMAL"],marker="o")
+- marker = 'o' adding circles as data points
+
+	='v'  downward triangles as data points
+- linestyle = "--"	 lifestyle is now --
+- color = "r"	color is now red
+
+
+ax.set_xlabel("")
+ax.set_ylabel("")
+ax.set_title("")
+
+plt.show()
+
+
+
+# Parse the date column as dates and use data column as index
+
+climate_change = pd.read_csv('climate_change.csv', parse_dates=["date"], index_col="date")
+
+# slicing with pandas data frame indexes (dates)
+seventies = climate_change["1970-01-01":"1979-12-31"]
+
+# Using two y axes (twin axes)
+ax2 = ax.twinx()
+ax2.plot(x,y,color="")
+ax2.set_ylabel(color="")	//setting the ylabel to be __ color
+ax2.tick_params('y',colors="")		// coloring the color of the ticks (The first parameter can be 'x' or 'y')
+
+# adding annotations (pieces of text that explain a feature)
+ax.annotate("text to add", xy = [x's position, y's position])
+ax2.annotate(">1 degree", xy=(pd.Timestamp('2015-10-06'), 1),xytext=(pd.Timestamp('2008-10-06'), -0.2),arrowprops={"arrowstyle":"->", "color":"gray"})
+
+# adding arrow to the annotation
+arrowprops = {}	//default property
+arrowprops={"arrowstyle":"->", "color":"gray"}	# thin arrow with widehead
+
+
+
+------ Quantitive comparisons and statistical visualizations ------- 
+
+#### Barcharts (ax.bar()) #### 
+
+ax.bar(x,y)
+ax.set_xticklabels(x,rotation = 90)	//rotation by 90 deg
+ax.set_ylabel("   ")
+
+# stacked bar chart
+ax.bar(x,y,label = "")
+	- x
+	- y
+	-label
+	-yerr = __some column__.std()
+
+
+ax.bar(x,z,bottom=y,label = "") stack z onto y
+ax.bar(x,g,bottom=y+z,label = "") stack g onto y+z
+ax.legend()	// shows the legends, the labels specified above
+plt.show()
+
+## Statistical barplots
+ax.bar("Rowing", mens_rowing['Height'].mean(), yerr=mens_rowing['Height'].std())
+
+
+
+#### Histograms #### 
+
+ax.hist(x,y,bins = ___)
+ax.hist(x,y,....) 	//calling multiple ax.hists() plot multiple histograms on the same canvas
+
+- Parameters:
+bins = __    
+	default:10 
+	bins = [10,20,30..] 	// we can also specify boundaries
+histtype
+	default: "bar"
+	"step" : This only draw the outline of the histogram
+
+
+
+#### Boxplots #### 
+ax.boxplot([x1,x2]])	//plotting  two box plots side by side
+ax.set_xticklabels([x1_name, x2_name])
+ax.set_ylabel(y column name)
+plt.show()
+
+
+# Adding error bars to plots (Line plot with error bars)
+ax.errorbar(x,y,yerr = )
+
+
+#### Scatter plot ####
+ax.scatter(x,y)
+	- x
+	- y
+	- c = ___.index  # colors the scatter dots with a discrete variable
+
+
+------ Alternate the style of the plot ------- 
+plt.style.use()
+Fill in:
+	"ggplot"
+	"bmh"
+	"seaborn-colorblind"	//seaborn is for statistical visualization
+	"tableau-colorblind10"
+	"grayscale"
+
+
+----- Sharing and saving the visualizations ------- 
+fig.savefig("____.png")
+	.png		// loss-less compression
+	.jpg		// Used in websites
+	.svg 		// Useful for further editing	
+
+quality 	// 1-100
+dpi		// resolution
+
+
+
+
 
 
 ################################# Class #################################
@@ -708,20 +833,53 @@ class Date:
 # if year is optional:
 d1 = Date(year="2019",2,3)
 
-d=Date(2018,4,5) # creating
+d = Date(2018,4,5) # creating
 
 
-## print
+***** Special Methods in classes *****
+
+1.
 __str__():
 
 def __str__(self):
-	output = self.___+" "+ self.___  # this is the string we want to print
+	output = "The date is " + self.year+" "+ self.month  # this is the string we want to print
 	return output
 
--- to print output just print the instance ; ex: print(d) # reference to the d uptop
+Ex:
+(This method prints the instance d)	//just directly print the object out
+print(d) # This prints: "The date is 2018 4"
+ 
+
+## If one class calls __str__ to print out another interacting object, then the other class needs to have the __str__ method
+
+2.
+__eq__():
+Comparison between an object and another
+def __eq__(self,other):
+	return .... True if self == other, False if not
 
 
-################################# class method vs static nethod ######################
+See if two objects are equal
+Ex:
+    def __eq__(self,other):
+        # we also need to checl self and other are the same type, eg. the same class first
+        if type(self) != type(other):
+            return False
+        status = self.month == other.month and self.day == other.day and self.year == other.year
+        return status
+
+3.
+__lt__():
+def __lt__(self,other):
+
+__gt__():
+obj1 > obj2	
+	
+
+4. __add__():
+What happens when u add objects? obj1 + obj2
+
+################################# class method vs static method ######################
 
 ****   static method就是包含在這個class裡面的正常的method，像是函式包裡面一個預先建好的method。
 @staticmethod 
@@ -1029,13 +1187,15 @@ t2=t1*2
 print(t2)
 
 ## reshape matrix
-x=np.arange(4)
+x=np.arange(4) 		// 0 1 2 3
 print(x)
 print(x.reshape(4,1))
 
 ## Transpose
-x=np.zeros((10,3))
+x=np.zeros((10,3))  # a ndarray of 10 rows and 3 columns
 print(x.T)
+np.zeros(10)		// 0 0 0  for 10 zeros
+
 
 ## get random number
 np.random.randn()     ## totally random float
@@ -1063,7 +1223,7 @@ np.log10()
 np.log1p()  ## returns the ln of one plus input array
 
 
-## concatenating two bumpy arrays
+## concatenating two numpy arrays
 x_train=np.concatenate((x_train_1,x_train_2),axis=0)
 
 # finding the indexes of all True objects in a list
@@ -1081,7 +1241,9 @@ Return True if at least one element of an iterable is True, else False (if array
 or all elements are false)
 
 
+# concatenate two ndarrays
 
+np.concatenate((a,b), axis = 0 or 1)	// a, b are ndarrays
 
 ################################# pandas #################################
 
@@ -1103,7 +1265,7 @@ my_obj.index
 _ in my_obj
 
 ## reindex
-__.reindex(__a index__,method="ffill")
+__.reindex(__a index__,method="fill")
 
 
 ## read files
@@ -1123,13 +1285,26 @@ bb=pd.DataFrame(aa,index=[22,33,44],columns=['one','two','three'],dtype=_'float'
 
 ## copy a dataframe/ or certain columns
 cc=bb[['one','three']].copy()
-#純字典格式->利用from_dict功能
+
+
+##  Turn a dictionary to a pandas dataframe
 scores = {"姓名":["小華","小明","小李"],
           "國文":[80,55,75],
           "數學":[90,70,45]}
 score_df = pd.DataFrame.from_dict(scores)
 
-## lists to dataframe
+
+# list of dictionaries to a pandas dataframe (row by row)
+list_of_dicts = [
+{'a':1,"b":2,"c":3},
+{'a':4,"b":5,"c":6}
+]
+	a b c
+0	1 2 3
+1	4 5 6
+
+
+## dictionary of lists to a pandas dataframe (column by column)
 percentile_list = pd.DataFrame(
     {'lst1Title': lst1,
      'lst2Title': lst2,
@@ -1143,20 +1318,23 @@ pd.DataFrame(data,columns=['','',....])
 __.head()  ## 可以指定幾行 ex:head(10)
 __.tail()
 __.shape   ## returns data frame shape (row,col)
-__.columns ## returns what columns there are
+.size      ## returns rows
+__.columns ## returns column names
 .__index:
 	- check index
 	- specify index: ___.index = __somelist__
-__.info()  ## check out data types of each column
+__.info()  ## check out name and data types of each column, also if exist any missing values
+__.values  ## returns 2D numpy array
 __.dtypes  ## show each column data type
 __.describe() # only returns descriptions of continuous variables
-__,dropna()
+__.dropna()
 
 
-## count,mean,std,min,q1,q2,q3,max
-__.count()  ## 查看個數  **
+--------- Summary statistics --------- 
+## count,mean,std,q1,q2,q3,max.min,quantile
+__.count()  	# count
 __.unique()
-__.sum()	// can specify axis .sum(axis=0/1); axis=0, sum by rows. axis=1, sum by columns
+__.sum()	#can specify axis .sum(axis=0/1); axis=0, sum by rows. axis=1, sum by columns
 __.mean()
 __.median()
 __.describe()
@@ -1173,11 +1351,15 @@ __.skew()
 __.kurt() ## kurtosis>3 --> heavier tails
 __.corr() ## correlation matrix of all values * DataFrame.corr(method='pearson/kendall/spearman', min_periods=1) *
 __.cov()
-
 __.astype() 	# astype('int64')
+
+__.cumsum()	# cumulative sum
+__.cummax()	# cumulative maximum
+
 
 ** 相異值個別有多少個
 pd.value_counts(__some column__)
+pd.value_counts(__some column__,sort = True,normalize = True)	// Turns the counts to proportions
 
 
 
@@ -1226,17 +1408,18 @@ score_df.iloc['張小華'].idxmin() #張小華考最差的科目
 score_df.iloc['張小華'].min() #張小華考最差的分數
 
 
-
-
 - Column 條件式選取
 ** select dtypes
 _df__.select_dtypes(include=['','',..])
 
 
-**  filter()功能
-gapminder[gapminder[(gapminder['year'] == 2007) & (gapminder['continent'] == 'Asia')]]
 
-df.column.isin(value)  ## 欄位中包含...
+
+
+**  filter()功能
+gapminder[(gapminder['year'] == 2007) & (gapminder['continent'] == 'Asia')]]
+
+df.column.isin([___,___,__...])  ## 欄位中包含... ex: dogs['___']isin([___,___])
 
 ** mutate()功能  / Use lambda functions
 gapminder['country_abb'] = gapminder['country'].apply(lambda x: x[:3])
@@ -1247,18 +1430,33 @@ gapminder[gapminder['year'] == 2007][['pop']].sum()
 -mean
 gapminder[gapminder['year'] == 2007][['lifeExp', 'gdpPercap']].mean()
 
----groupby
-gapminder[gapminder['year'] == 2007].groupby(by = 'continent')['pop'].sum()
-gapminder[gap-minder['year'] == 2007].groupby(by = 'continent')[['lifeExp', 'gdpPercap']].mean()
+** groupby
+__df__.groupby(column)[select a columns].__a method__
+dogs.groupby("color")['___'].mean()
 
-dtype_df.groupby("Column Type").aggregate('count').reset_index()
+# groupby combining with aggregate
+__df__.groupby(_column__)[some column].agg([function1,function2,function3])
+
+# groupby multiple columns
 __df__.groupby(['',''])
 
 
-** aggregate
-df.agg()
+Ex: Filter then groupby
+gapminder[gapminder['year'] == 2007].groupby(by = 'continent')['pop'].sum()
+gapminder[gap-minder['year'] == 2007].groupby(by = 'continent')[['lifeExp', 'gdpPercap']].mean()
 
-## Aggregate these functions over the rows.
+df.groupby("Column").aggregate('count').reset_index()
+
+
+
+** aggregate
+df['column'].agg(function)
+
+## Aggregate over specific columns
+df[[__column1__,__column2__,__column3__]].agg(somefunction)
+df[[__column1__,__column2__,__column3__]].agg(somefunction1,somefunction2)
+
+## Aggregate multiple functions (sum, min) over the all columns.
 >>> df.agg(['sum', 'min'])
         A     B     C
 
@@ -1271,6 +1469,9 @@ min   1.0   2.0   3.0
 max   NaN  8.0
 min   1.0  2.0
 sum  12.0  NaN
+
+
+
 
 ** 判斷遺漏值
 print(ironmen_df.ix[:, "groups"].isnull())
@@ -1313,7 +1514,7 @@ data.drop(["Avery Bradley", "John Holland", "R.J. Hunter"], inplace = True)
 ___.drop(column, axis =1)
 
 
-- concatenation f
+- concatenation 
 pd.concat([df1,df2]) # with rows
 pd.concat([df1,df2],axis=1) # with columns
 
@@ -1330,34 +1531,27 @@ pd.merge(df1,df2,on="__",how="left")
 
 
 - sort by column
-__.sort_values("column")
+__.sort_values(__column name___)
 EX:   bb=bb.sort_values('one',ascending=False)
+- sorting by multiple columns
+__.sort_values([__column1__, __column2__])
 
--- na
-   ## fill na values with 
-.fillna("None") # fill na with string "None"
-__.dropna()  # drop all na values
-
-
-# drop duplicates
-df.drop_duplicates()
-df.sample(frac=0.5)  ## random 50 % data
-df.sample(n=10) 
+** sort 1st column ascending, 2nd column descending
+__.sort_values([__column1__, __column2__],ascending = [True,False])	
 
 
-https://oranwind.org/python-pandas-ji-chu-jiao-xue/
-http://codingpy.com/article/a-quick-intro-to-pandas/
-https://morvanzhou.github.io/tutorials/data-manipulation/np-pd/3-1-pd-intro/
-
-
-__.clip()
-EX:
-# 將 GrLivArea 限制在 800 到 2500 以內, 調整離群值
-df['GrLivArea'] = df['GrLivArea'].clip(800, 2500)
-
-
-### getting a 2x2 table 
+## getting a 2x2 table 
 2by2table = pd.crosstab(df[col1],df[col2])
+
+## pivot table (alternative to groupby)
+Index = __	// group by this index
+__df__.pivot_table(values = "__", index = "___",aggfunc = [function1, function2])
+__df__.pivot_table(values = "__", index = "___",columns = some column, fill_value = 0, margins = True)	
+// columns = ___ means we are further segmenting using the column
+
+Ex:	# Print mean weekly_sales by department and type; fill missing values with 0
+print(sales.pivot_table(values = "weekly_sales",index= ['type','department'],fill_value = 0 ))
+
 
 
 ## chi-square test using pandas columns
@@ -1373,8 +1567,56 @@ for c in data_mean.columns:
         the hypothesis that these two variables have a relationship is {chi_square_results[1]<0.05}\
         under 0.05 confidence. \n')
 
+################################# Cleaning data in Python (DataCamp) #################################
+
+
+
+
+
+**** Handling missing values ****
+
+-- Nan
+
+# check how many nas
+__df__.isna().any() # check which columns have na
+__df__isna().sum()  # check which columns have how many nas
+
+# fill nas
+__df__.fillna("None") # fill na with string "None"
+
+# drop nas
+__df__.dropna()  # drop all na values
+
+
+# drop duplicates
+df.drop_duplicates()
+Ex:
+df.drop_duplicates(subset = [__column1__,__column2__])	//dropping duplicates based on 2 columns
+
+# sampling
+df.sample(frac=0.5)  ## random 50 % data
+df.sample(n=10) 
+
+
+https://oranwind.org/python-pandas-ji-chu-jiao-xue/
+http://codingpy.com/article/a-quick-intro-to-pandas/
+https://morvanzhou.github.io/tutorials/data-manipulation/np-pd/3-1-pd-intro/
+
+
+__.clip()
+EX:
+# 將 GrLivArea 限制在 800 到 2500 以內, 調整離群值
+df['GrLivArea'] = df['GrLivArea'].clip(800, 2500)
+
+
+
+
+
+
+
 
 ################################# Plotting with pandas data frame #################################
+
 https://medium.com/datainpoint/從-pandas-開始-python-與資料科學之旅-8dee36796d4a
 https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.html
 
@@ -1394,6 +1636,10 @@ plt.xlabel("____")
 plt.ylabel("____")
 plt.title(" ")
 plt.subplots(nrows=3, ncols=1)
+plt.legend()	# ex: plt.legend([__,__])
+
+
+
 
 kind — ‘bar’,’barh’,’pie’,’scatter’,’kde’ etc which can be found in the docs.
 color — Which accepts and array of hex codes corresponding sequential to each data series / column.
@@ -1402,45 +1648,54 @@ xlim, ylim — specify a tuple (lower limit, upper limit) for which the plot wil
 legend— a boolean value to display or hide the legend
 labels — a list corresponding to the number of columns in the dataframe, a descriptive name can be provided here for the legend
 title — The string title of the plot
-
-
+rot - Rotation degree
+alpha - visibility, 0:transparent ~ 1:opaque(full)
 
 * Scatter plot
-
-df.plot(kind='scatter',x='',y='',color='')
+__df__.plot(kind='scatter',x='',y='',color='')
 plt.show()
 
 * Bar plot
-df.plot(kind='bar',x='',y='')
+__df__.plot(kind='bar',x='',y='')
 
-- barplot with groupby
-df.groupby('state')['name'].nunique().plot(kind='bar')
+
+- Barplot with groupby
+df.groupby('state')['name'].unique().plot(kind='bar')
 plt.show()
 
 
 * Line plot
 (Multiple columns)
 ax = plt.gca()
-df.plot(kind='line',x='',y='',ax=ax)			// first line
-df.plot(kind='line',x='',y='', color='', ax=ax)		// second line
+__df__.plot(kind='line',x='',y='',ax=ax)			// first line
+__df__.plot(kind='line',x='',y='', color='', ax=ax)		// second line
 plt.show()
-
-
+__df__.plot(x=__,y=__,kind = "line",rot = 45)	// rotate x ticks by 45 deg
+ 
 
 * Histogram
-df.hist(column='', bins=50)
+__df__.hist(column='', bins=50)
+__df__[__some column__].hist()	// let histogram be more transparent: alpha = 0.7
+
+# creating multiple histograms simultaneously
+__df__[[column1,column2,...]].hist()
+
+
 
 * piechart
-df.plot.pie(y='some_column',figsize=(5, 5),autopct='%1.1f%%', startangle=90)
+__df__.plot.pie(y='some_column',figsize=(5, 5),autopct='%1.1f%%', startangle=90)
 plt.show()
 
 
-* box plot
 
-
+################################# Data visualization with Seaborn (Pandas + Matplotlib) #################################
 
 * Pairplots for column to column
 sns.pairplot(car_data.loc[:,car_data.dtypes == 'float64'])
+
+
+
+
 
 
 
@@ -1514,7 +1769,7 @@ Import from another file from the same directory
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler, StandardScaler
 
 
-## Standard encoding 將連續變項標準化
+### Standard encoding 將連續變項標準化
 #标准化，返回值为标准化后的数据
 StandardScaler().fit_transform(data)
 
@@ -1531,7 +1786,21 @@ MMEncoder = MinMaxscaler()
 df_mm = MMEncoder.fit_transform(df) #fit then transform
 
 
-Boxcox
+
+---- sample code ------
+LEncoder = LabelEncoder()
+MMEncoder = MinMaxScaler()
+for c in df.columns:
+    df[c] = df[c].fillna(-1)
+    if df[c].dtype == 'object':
+        df[c] = LEncoder.fit_transform(list(df[c].values))
+    df[c] = MMEncoder.fit_transform(df[c].values.reshape(-1, 1))
+df.head()
+
+--------------------------
+
+
+### Boxcox
 from scipy.stats import boxcox
 boxcox(x)
 
@@ -1559,6 +1828,7 @@ for col in df.columns:
         data_mean = data_mean.drop([col],axis =1)  ## drop original column
 
 data_mean = data_mean.drop(['Survived'], axis =1)
+
 
 
 # Binarizer 將連續變項二元化
@@ -1590,10 +1860,19 @@ ridge = Ridge(alpha=10)
     ridge.fit(X,Y)
     print("Ridge model:", pretty_print_linear(ridge.coef_))
 
-3. Xgboost
 
 
+################# Leaf Encoding : Day 32 ML100 #################
+Method:
+use gradient boosting classifier or random forest classifier to fit trainX to get categories
+These categories are better than human discriminated categories, then we use one hot encoder
+To encode, and fit logistic regression or factorization machine (?) to get new predictions.
 
+
+---
+Training set
+Testing set
+Validation set
 
 
 
@@ -1612,6 +1891,23 @@ estimator = LinearRegression()
 estimator.fit(train_X, train_Y)
 # 可以接cv
 pred = estimator.predict(test_X)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Logistic regression	// can be used in binary or multhclass classification
@@ -1667,6 +1963,12 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(
 ...     X, y, test_size=0.4, random_state=0)
 
+- random state: seed for reproducibility
+
+
+Ex:
+X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.25)	// stratify based on y 
+
 
 
 ## Cross Validation
@@ -1675,6 +1977,27 @@ https://scikit-learn.org/stable/modules/cross_validation.html
 from sklearn.model_selection import cross_val_score
 scores = cross_val_score(_model__,train_x,train_y,cv=?) ## check how many cross validations to do
 scores
+
+
+
+K Fold cross validation
+
+# Training sets, validation sets, and testing sets
+Training set consists: Training set and validation set
+Testing set: Used for testing the model trained on the training set
+
+from sklearn.model_selection import KFold
+
+kf = KFold(n_splits=5)
+i = 0
+for train_index, test_index in kf.split(X):
+    i +=1 
+    X_train, X_test = X[train_index], X[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    print("FOLD {}: ".format(i))
+    print("X_test: ", X_test)
+    print("Y_test: ", y_test)
+    print("-"*30)
 
 
 
@@ -1693,7 +2016,7 @@ What is boosting?
 Combination of weak learners into a strong learner, for all t, based on previous outcome t-1. We
 give lower weight to the correct predictions, and higher weight to miss-classified ones
 
-** gradient boosting
+** gradient boosting regressor
 from sklearn.ensemble import GradientBoostingRegressor
 estimator = GradientBoostingRegressor()
 
@@ -1805,19 +2128,78 @@ Image recognition
 Text mining (detect spam, sentimental analysis)
 
 
+
+
+
+
+---------------  Gradient Boosting Classifier -----------------
+
+from sklearn.ensemble import GradientBoostingClassifier
+# 因為擬合(fit)與編碼(transform)需要分開, 因此不使用.get_dummy, 而採用 sklearn 的 OneHotEncoder
+
+
+
+
+
+---------------  Random Forest Classifier -----------------
+from sklearn.ensemble import RandomForestClassifier
+
+
+
+
+
+
+################################# Metrics evaluation ###############
+
 ---------  Evaluation Metrics in Classification ---------
 
 *** Jaccard Index : the union between predicted and actual labels
 
 *** F-1 score: 
 
-Precision: TP/(TP+FP)	// TP: true positive
-Recall: TP/(TP+FN)
+Precision: TP/(TP+FP)	// TP: true positive  模型判定瑕疵，樣本確實為瑕疵得比例
+Recall: TP/(TP+FN)      模型判定瑕疵佔所有瑕疵的比例
 F1 score = (2*(precision*recall)) / (precision+recall)
+
+
+(Model)	\ (Reality)	Positive     Negative
+
+Positive		TP		FP
+ 
+
+Negative		FN		TN
+
+
+
+
+
 Best: 1	// when precision is 1 and recall is 1
 Worst: 0
 
 Classifier has good recall and good precision  ----> good classifier
+
+
+--- code -----
+Precision, recall, and F1 score
+
+y_pred_binarized: probability transformed to categorical variables depending on threshold (y_pred_binarized = np.where(y_pred>threshold, 1, 0) )
+
+f1 = metrics.f1_score(y_test, y_pred_binarized) # 使用 F1-Score 評估
+precision = metrics.precision_score(y_test, y_pred_binarized) # 使用 Precision 評估
+recall  = metrics.recall_score(y_test, y_pred_binarized) # 使用 recall 評估
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 *** Log loss
@@ -1831,13 +2213,144 @@ from sklearn import metrics
 print("Train set Accuracy: ", metrics.accuracy_score(y_train, neigh.predict(X_train)))
 print("Test set Accuracy: ", metrics.accuracy_score(y_test, yhat))
 
-More on sklearn metrics:
+
+** ROC curve
+
+from sklearn.metrics import roc_curve
+y_pred: needs to be probability
+
+
+
+** AUC score
+metrics.roc_auc_score(y_test, y_pred) 	// y_pred needs to be probability
+
+
+
+
+** Top K accuracy
+
+
+---------  Evaluation Metrics in regression ---------
+
+from sklearn import metrics
+
+** Mean absolute error
+
+metrics.mean_absolute_error(prediction, y) 
+
+** Mean squared error
+metrics.mean_squared_error(prediction, y)
+
+** R square
+metrics.r2_score(prediction, y)
 
 
 
 
 
 
+################################# Clustering #################################
+
+---------------  K means clustering (only suitable for continuous variables, use K-modes for categorical variables)-----------------
+Method:
+1. Random initialized k centroids
+2. Get distance matrix (euclidean distance), and assign each data point to a cluster
+3. Calculate the center of each cluster, and make it the new centroid
+4. Iterate until convergence (def: minimizing the intra-cluster distance, and maximize the inter-cluster distance)
+
+
+***** Step into clustering *****
+
+1. Normalize continuous data (e.g. Standard Scaler)
+
+
+*********** Code ************
+from sklearn.cluster import KMeans 
+k_means = KMeans(init = "k-means++", n_clusters = 4, n_init = 12) 	
+
+// n_init: Number of time the k-means algorithm will be run with different centroid seeds. The final results will be the best output of n_init consecutive runs in terms of inertia. (Inertia: The coordinates remain the same)
+
+k_means.fit(X)
+k_means_labels = k_means.labels_
+k_means_cluster_centers = k_means.cluster_centers_
+
+---------------  Hierarchical clustering (Agglomerative: bottom up) ---------------
+Methods:
+1. Create n clusters, one for each data point
+2. Compute proximity matrix (distance: Euclidean distance)
+3. Merge two closest clusters and update the proximity matrix
+4. Repeat 2,3,4 until a single cluster remains
+
+
+How to calculate distance between clusters?
+- Single linkage clustering : min distance between clusters
+- Complete Linkage clustering : max distance between clusters
+- Average Linkage clustering : Mean distance of the distance of every point in one cluster to every point in another cluster
+- Centroid linkage clustering : distance of centroid of a cluster to centroid of another
+
+Pros:
+Does not require specifying the number of clusters (eg: K)
+Always generates the same clusters
+
+Cons:
+Long run time
+
+*********** Code ************
+from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster import hierarchy 
+
+dist_matrix = distance_matrix(feature_mtx,feature_mtx) 
+print(dist_matrix)
+agglom = AgglomerativeClustering(n_clusters = 6, linkage = 'complete')
+agglom.fit(feature_mtx)
+agglom.labels_
+pdf['cluster_'] = agglom.labels_
+pdf.head()	//pdf is the original dataset
+
+
+
+
+
+## plotting
+import matplotlib.cm as cm
+n_clusters = max(agglom.labels_)+1
+colors = cm.rainbow(np.linspace(0, 1, n_clusters))
+cluster_labels = list(range(0, n_clusters))
+
+# Create a figure of size 6 inches by 4 inches.
+plt.figure(figsize=(16,14))
+
+for color, label in zip(colors, cluster_labels):
+    subset = pdf[pdf.cluster_ == label]
+    for i in subset.index:
+            plt.text(subset.horsepow[i], subset.mpg[i],str(subset['model'][i]), rotation=25) 
+    plt.scatter(subset.horsepow, subset.mpg, s= subset.price*10, c=color, label='cluster'+str(label),alpha=0.5)
+#    plt.scatter(subset.horsepow, subset.mpg)
+plt.legend()
+plt.title('Clusters')
+plt.xlabel('horsepow')
+plt.ylabel('mpg')
+
+
+
+
+---------------  DBSCAN (Density Based Clustering) ---------------
+
+can detect outliers
+Two parameters : R; radius, M: minimum points
+
+Three types of data points: 
+Core: has m points in R
+Border: neighborhood has less than M points or is reachable by a core point
+Outlier: not core or border point
+
+Connect core points that are neighbors, and assign as the same cluster
+
+Pros:
+Doesn't require specification of K
+
+*********** Code ************
+??
 
 
 
